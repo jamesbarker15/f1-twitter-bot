@@ -1,4 +1,26 @@
-import requests, random
+import requests, random, tweepy
+import keys
+
+# Functions
+def get_api():
+    auth = tweepy.OAuthHandler(keys.api_key, keys.api_secret)
+    auth.set_access_token(keys.access_token, keys.access_token_secret)
+    return tweepy.API(auth)
+
+
+def get_client():
+    client = tweepy.Client(consumer_key=keys.api_key,
+                           consumer_secret=keys.api_secret,
+                           access_token=keys.access_token,
+                           access_token_secret=keys.access_token_secret,
+                           bearer_token=keys.bearer_token)
+    return client
+
+
+def post_tweet(api: tweepy.API, client:tweepy.Client, message):
+    client.create_tweet(text=message)
+    print('Posted tweet')
+
 
 year = random.randrange(1994, 2022)
 
@@ -19,8 +41,7 @@ else:
 
 url = f"http://ergast.com/api/f1/{year}/{race}/results.json"
 
-print(year, race)
-
+# Request the data
 request = requests.get(url)
 content = request.json()
 
@@ -39,10 +60,18 @@ winner = results[0]
 driver = winner["Driver"]
 constructor = winner["Constructor"]
 
+# Create the tweet.
+message = "The " + circuit['raceName'] + " in the " + circuit['season'] + \
+          " season took place on " + circuit['date'] + " at the " \
+          + circuit_name["circuitName"] + ", the winning driver was " \
+          + driver['givenName'] + " " + driver['familyName'] + \
+          " - " + driver['code'] + " racing for " + constructor['name'] + ". "
 
-print("The " + circuit['raceName'] + " in the " + circuit['season'] + " season took place on " + circuit['date'] +
-      " at the " + circuit_name["circuitName"] + ", the winning driver was " + driver['givenName'] + " " + driver['familyName'] +
-      " - " + driver['code'] + " racing for " + constructor['name'] + ". ")
+# Post the tweet
+if __name__ == '__main__':
+    api = get_api()
+    client = get_client()
+    post_tweet(api, client, message)
 
 
 
