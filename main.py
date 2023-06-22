@@ -22,9 +22,9 @@ def post_tweet(api: tweepy.API, client:tweepy.Client, message):
     print('Posted tweet')
 
 
-year = random.randrange(1994, 2022)
+year = random.randrange(1990, 2022)
 
-if year in [1994, 1996, 1998, 1999, 2003]:
+if year in [1990, 1991, 1992, 1993, 1994, 1996, 1998, 1999, 2003]:
     race = random.randrange(1, 16)
 elif year in [1995, 1997, 2000, 2001, 2002, 2007, 2009, 2020]:
     race = random.randrange(1, 17)
