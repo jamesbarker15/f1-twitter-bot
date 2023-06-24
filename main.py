@@ -1,5 +1,8 @@
-import requests, random, tweepy
+import requests
+import random
+import tweepy
 import keys
+import sqlite3
 
 
 # Functions
@@ -23,43 +26,22 @@ def post_tweet(api: tweepy.API, client: tweepy.Client, message):
     print('Posted tweet')
 
 
-# Select a year between 1950 and 2022 at random
+# Pick a year at random between 1950 and 2022
 year = random.randrange(1950, 2022)
 
-# Select a race number, dependent on how many races there were that year.
-if year in [1950, 1955]:
-    race = random.randrange(1, 7)
-elif year in [1951, 1952, 1956, 1957, 1961]:
-    race = random.randrange(1, 8)
-elif year in [1953, 1954, 1959, 1962, 1966]:
-    race = random.randrange(1, 9)
-elif year in [1960, 1963, 1964, 1965]:
-    race = random.randrange(1, 10)
-elif year in [1958, 1967, 1969, 1971]:
-    race = random.randrange(1, 11)
-elif year in [1968, 1972]:
-    race = random.randrange(1, 12)
-elif year in [1970]:
-    race = random.randrange(1, 13)
-elif year in [1975, 1980]:
-    race = random.randrange(1, 14)
-elif year in [1973, 1974, 1979, 1981, 1983]:
-    race = random.randrange(1, 15)
-elif year in [1990, 1991, 1992, 1993, 1994, 1996, 1998, 1999, 2003]:
-    race = random.randrange(1, 16)
-elif year in [1995, 1997, 2000, 2001, 2002, 2007, 2009, 2020]:
-    race = random.randrange(1, 17)
-elif year in [2004, 2006, 2008]:
-    race = random.randrange(1, 18)
-elif year in [2005, 2010, 2011, 2013, 2014, 2015]:
-    race = random.randrange(1, 19)
-elif year in [2012, 2017]:
-    race = random.randrange(1, 20)
-elif year in [2016, 2018, 2019]:
-    race = random.randrange(1, 21)
-else:
-    race = random.randrange(1, 22)
+# Connect to the database, select row with the year.
+connection = sqlite3.connect("data.db")
+cursor = connection.cursor()
+cursor.execute("SELECT races FROM f1_years WHERE year=?", (year, ))
 
+# Return the number of race races in that year from the database
+data = cursor.fetchone()
+races = data[0]
+
+# Pick a random race between 1 and max number of races obtained from database
+race = random.randrange(1, races)
+
+# Formulate the API URL
 url = f"https://ergast.com/api/f1/{year}/{race}/results.json"
 
 # Request the data
@@ -97,6 +79,7 @@ except:
               + driver['givenName'] + " " + driver['familyName'] + \
               " racing for " + constructor[
                   'name'] + ". "
+
 
 # Post the tweet
 if __name__ == '__main__':
