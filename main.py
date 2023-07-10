@@ -4,6 +4,7 @@ import tweepy
 import keys
 import sqlite3
 
+#Testing the pipeline.
 
 # Functions
 def get_api():
@@ -34,7 +35,7 @@ connection = sqlite3.connect("data.db")
 cursor = connection.cursor()
 cursor.execute("SELECT races FROM f1_years WHERE year=?", (year, ))
 
-# Return the number of race races in that year from the database
+# Return the number of races in that year from the database
 data = cursor.fetchone()
 races = data[0]
 
@@ -44,11 +45,11 @@ race = random.randrange(1, races)
 # Formulate the API URL
 url = f"https://ergast.com/api/f1/{year}/{race}/results.json"
 
-# Request the data
+# Request and get the data
 request = requests.get(url)
 content = request.json()
 
-# Get the data
+# Filter the data
 data = content["MRData"]
 race_table = data['RaceTable']
 races = race_table["Races"]
@@ -63,7 +64,7 @@ winner = results[0]
 driver = winner["Driver"]
 constructor = winner["Constructor"]
 
-# Create the tweet, the using try and except for older data which doesn't
+# Create the tweet, using try and except for older data which doesn't
 # contain driver codes
 try:
     message = "The " + circuit['raceName'] + " in the " + circuit['season'] + \
