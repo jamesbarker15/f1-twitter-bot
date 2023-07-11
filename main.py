@@ -4,8 +4,6 @@ import tweepy
 import keys
 import sqlite3
 
-#Testing the pipeline 123
-
 # Functions
 def get_api():
     auth = tweepy.OAuthHandler(keys.api_key, keys.api_secret)
@@ -31,7 +29,7 @@ def post_tweet(api: tweepy.API, client: tweepy.Client, message):
 year = random.randrange(1950, 2022)
 
 # Connect to the database, select row with the year.
-connection = sqlite3.connect("data.db")
+connection = sqlite3.connect("/root/f1winners/data.db")
 cursor = connection.cursor()
 cursor.execute("SELECT races FROM f1_years WHERE year=?", (year, ))
 
